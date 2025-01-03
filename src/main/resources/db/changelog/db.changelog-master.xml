@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1-create-user-table" author="yourname">
+        <sqlFile path="db/changelog/sql/01create_user_table.sql" />
+    </changeSet>
+
+    <changeSet id="2-create-role-table" author="yourname">
+        <sqlFile path="db/changelog/sql/02create_role_table.sql" />
+    </changeSet>
+
+    <changeSet id="3-create-permission-table" author="yourname">
+        <sqlFile path="db/changelog/sql/03create_permission_table.sql" />
+    </changeSet>
+
+    <changeSet id="4-create-user-role-table" author="yourname">
+        <sqlFile path="db/changelog/sql/04create_user_role_table.sql" />
+    </changeSet>
+
+    <changeSet id="5-create-role-permission-table" author="yourname">
+        <sqlFile path="db/changelog/sql/05create_role_permission_table.sql" />
+    </changeSet>
+    <changeSet id="6-insert-role-default" author="yourname">
+        <sqlFile path="db/changelog/sql/06insert_role_default.sql" />
+    </changeSet>
+
+</databaseChangeLog>
