@@ -37,7 +37,7 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
     @ManyToMany
-    Set< Role> roles = new HashSet<>();
+    Set< Role> role = new HashSet<>();
 
     public void setId(Long id) {
         this.id = id;
@@ -79,7 +79,7 @@ public class User {
         this.avatar = avatar;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Set<Role> role) {
+        this.role = role;
     }
 }

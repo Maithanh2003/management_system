@@ -38,9 +38,15 @@ public class Role {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    Set<Permission> permissions;
+    Set<Permission> permission;
 
     public Long getId() {
         return id;
     }
+    public void markAsDeleted() {
+        this.is_deleted = 1;
+        this.updated_at = LocalDate.now();
+        this.updated_by = "system";
+    }
+
 }

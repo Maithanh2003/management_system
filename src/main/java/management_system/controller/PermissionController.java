@@ -3,13 +3,11 @@ package management_system.controller;
 import lombok.RequiredArgsConstructor;
 import management_system.domain.entity.Permission;
 import management_system.domain.entity.User;
+import management_system.payload.PermissionRequest;
 import management_system.response.ApiResponse;
 import management_system.service.PermissionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class PermissionController {
     private final PermissionService permissionService;
 
     @GetMapping
-    ApiResponse<List<Permission>> getAllPermisson(){
+    ApiResponse<List<Permission>> getAllPermisson() {
         List<Permission> permission = permissionService.getAllPermission();
         return ApiResponse.<List<Permission>>builder()
                 .result(permission)
@@ -49,5 +47,29 @@ public class PermissionController {
         return ApiResponse.<Permission>builder()
                 .result(permission)
                 .build();
+    }
+
+    @PostMapping
+    public ApiResponse<Permission> createPermission(@RequestBody PermissionRequest request) {
+        Permission permission = permissionService.createPermission(request);
+        return ApiResponse.<Permission>builder()
+                .message("tao permission thanh cong")
+                .result(permission).build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deletePermissionById(@PathVariable Long id) {
+        permissionService.deletePermissionById(id);
+        return ApiResponse.<Void>builder()
+                .message("xoa permission thanh cong voi id " + id)
+                .result(null).build();
+    }
+
+    @DeleteMapping("/by-code/{code}")
+    public ApiResponse<Void> deletePermissionByCode(@PathVariable String code) {
+        permissionService.deletePermissionByCode(code);
+        return ApiResponse.<Void>builder()
+                .message("xoa permission thanh cong voi code " + code)
+                .result(null).build();
     }
 }

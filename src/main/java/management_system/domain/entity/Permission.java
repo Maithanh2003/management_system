@@ -19,7 +19,7 @@ public class Permission {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Column(name = "code")
+    @Column(name = "code",nullable = false, unique = true)
     private String code;
     @Column(name = "created_at")
     private LocalDate created_at;
