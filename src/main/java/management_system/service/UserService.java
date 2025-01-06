@@ -1,6 +1,5 @@
 package management_system.service;
 
-import ch.qos.logback.classic.encoder.JsonEncoder;
 import lombok.RequiredArgsConstructor;
 import management_system.domain.entity.Role;
 import management_system.domain.entity.User;
@@ -59,7 +58,7 @@ public class UserService implements IUserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setCreated_at(LocalDate.now());
         user.setCreated_by("System");
-        user.setRoles(Set.of(defaultRole));
+        user.setRole(Set.of(defaultRole));
 
         return userRepository.save(user);
     }

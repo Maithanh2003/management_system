@@ -27,27 +27,21 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>17</java.version>
-<<<<<<< Updated upstream
-=======
+
 		<selma.version>1.0</selma.version>
 		<jjwt-api.version>0.11.5</jjwt-api.version>
 		<jjwt-impl.version>0.11.5</jjwt-impl.version>
 		<jjwt-jackson.version>0.11.5</jjwt-jackson.version>
->>>>>>> Stashed changes
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-<<<<<<< Updated upstream
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-=======
->>>>>>> Stashed changes
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -77,8 +71,7 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<<<<<<< Updated upstream
-=======
+
 		<dependency>
 			<groupId>fr.xebia.extras</groupId>
 			<artifactId>selma</artifactId>
@@ -116,7 +109,6 @@
 			<version>${jjwt-jackson.version}</version>
 			<scope>runtime</scope>
 		</dependency>
->>>>>>> Stashed changes
 	</dependencies>
 
 	<build>
@@ -129,6 +121,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

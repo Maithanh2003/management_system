@@ -3,18 +3,26 @@ package management_system.service;
 import lombok.RequiredArgsConstructor;
 import management_system.domain.entity.Permission;
 import management_system.domain.entity.Role;
+import management_system.domain.repository.PermissionRepository;
 import management_system.domain.repository.RoleRepository;
 import management_system.exception.ResourceNotFoundException;
+import management_system.payload.RoleRequest;
 import management_system.service.impl.IRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RoleService implements IRoleService {
+    @Autowired
     private final RoleRepository roleRepository;
+    @Autowired
+    private final PermissionRepository permissionRepository;
 
 
     @Override
@@ -39,7 +47,56 @@ public class RoleService implements IRoleService {
     public List<Permission> getPermissionByRole(Long roleId) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with code: " + roleId));
-        return role.getPermissions().stream().toList();
+        return role.getPermission().stream().toList();
+
+    }
+
+    @Override
+    public List<Role> getAllRole() {
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public void deleteRole(Long roleId) {
+        Role role =  roleRepository.findById(roleId).orElseThrow(
+                ()-> new ResourceNotFoundException("role not found")
+        );
+        role.markAsDeleted();
+        roleRepository.save(role);
+    }
+
+    @Override
+    public Role createRole(RoleRequest request) {
+        var role = new Role();
+        role.setName(request.getName());
+        role.setCode(request.getCode());
+        var permissions = request.getPermission().stream()
+                .map(permissionRepository::findPermissionByCode)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toSet());
+        role.setCreated_at(LocalDate.now());
+        role.setCreated_by("System");
+        role.setPermission(permissions);
+
+        return roleRepository.save(role);
+    }
+
+    @Override
+    public Role updateRole(Long roleId, RoleRequest request) {
+        Role role = roleRepository.findById(roleId).orElseThrow(
+                () -> new ResourceNotFoundException("ROLE NOT FOUND")
+        );
+        var additionalPermissions = request.getPermission().stream()
+                .map(permissionRepository::findPermissionByCode)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toSet());
+
+        role.getPermission().addAll(additionalPermissions);
+        role.setName(request.getName());
+        role.setCode(request.getCode());
+        role.setUpdated_at(LocalDate.now());
+        role.setUpdated_by("System");
+        return roleRepository.save(role);
 
     }
 }
