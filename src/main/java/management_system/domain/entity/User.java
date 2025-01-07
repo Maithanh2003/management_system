@@ -39,6 +39,12 @@ public class User {
     @ManyToMany
     Set< Role> role = new HashSet<>();
 
+    @ManyToMany(mappedBy = "users")
+    private Set<Project> projects = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Task> tasks = new HashSet<>();
+
     public void setId(Long id) {
         this.id = id;
     }
