@@ -27,5 +27,17 @@
     <changeSet id="6-insert-role-default" author="yourname">
         <sqlFile path="db/changelog/sql/06insert_role_default.sql" />
     </changeSet>
+    <changeSet id="7-create_project_table" author="yourname">
+        <sqlFile path="db/changelog/sql/07create_project_table.sql" />
+    </changeSet>
+    <changeSet id="8-create_task_table" author="yourname">
+        <sqlFile path="db/changelog/sql/08create_task_table.sql" />
+    </changeSet>
+    <changeSet id="9-create_user_project" author="yourname">
+        <sqlFile path="db/changelog/sql/09create_user_project.sql" />
+    </changeSet>
+    <changeSet id="10-insert_data_extended" author="yourname">
+        <sqlFile path="db/changelog/sql/10insert_data_extended.sql" />
+    </changeSet>
 
 </databaseChangeLog>
