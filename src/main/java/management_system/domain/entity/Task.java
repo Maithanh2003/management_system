@@ -39,4 +39,9 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    public void markAsDeleted() {
+        this.is_deleted = 1;
+        this.updated_at = LocalDate.now();
+        this.updated_by = "system";
+    }
 }
