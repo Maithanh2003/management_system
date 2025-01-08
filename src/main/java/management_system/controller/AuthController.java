@@ -1,5 +1,6 @@
 package management_system.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import management_system.config.jwt.JwtUtils;
 import management_system.config.user.SystemUserDetails;
@@ -35,7 +36,7 @@ public class AuthController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest request){
+    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest request){
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(

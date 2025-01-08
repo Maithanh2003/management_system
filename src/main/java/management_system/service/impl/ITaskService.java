@@ -1,5 +1,6 @@
 package management_system.service.impl;
 
+import management_system.domain.dto.TaskDTO;
 import management_system.domain.entity.Task;
 import management_system.payload.AddUserTask;
 import management_system.payload.CreateTaskRequest;
@@ -19,5 +20,9 @@ public interface ITaskService {
     void deleteTask (Long taskId);
 
     Task updateTask(UpdateTaskRequest request, Long taskId);
+
+    TaskDTO convertToDto(Task task);
+
+    Task convertToEntity(TaskDTO taskDto);
 }
 

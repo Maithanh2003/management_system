@@ -1,5 +1,6 @@
 package management_system.service.impl;
 
+import management_system.domain.dto.ProjectDTO;
 import management_system.domain.entity.Project;
 import management_system.payload.UpdateProjectRequest;
 import management_system.payload.ProjectRequest;
@@ -14,6 +15,10 @@ public interface IProjectService {
     Project createProject(ProjectRequest request);
     Project updateProject(UpdateProjectRequest request, Long projectId);
     void deleteProject (Long projectId);
+
+    ProjectDTO convertToDto(Project project);
+
+    Project convertToEntity(ProjectDTO ProjectDto);
 //    List<User> getUserByProjectId (Long projectId);
 //    List<User> getUserByTaskId (Long taskId);
 }

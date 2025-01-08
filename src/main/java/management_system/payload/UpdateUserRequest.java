@@ -11,16 +11,4 @@ public class UpdateUserRequest {
     private String name;
     private String email;
     private String avatar;
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
 }

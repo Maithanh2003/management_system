@@ -1,11 +1,13 @@
 package management_system.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import management_system.domain.entity.Permission;
 import management_system.domain.entity.User;
 import management_system.payload.PermissionRequest;
 import management_system.response.ApiResponse;
 import management_system.service.PermissionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/permissions")
 public class PermissionController {
+    @Autowired
     private final PermissionService permissionService;
 
     @GetMapping
@@ -50,7 +53,7 @@ public class PermissionController {
     }
 
     @PostMapping
-    public ApiResponse<Permission> createPermission(@RequestBody PermissionRequest request) {
+    public ApiResponse<Permission> createPermission(@Valid @RequestBody PermissionRequest request) {
         Permission permission = permissionService.createPermission(request);
         return ApiResponse.<Permission>builder()
                 .message("tao permission thanh cong")

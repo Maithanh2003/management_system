@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface TaskRepository extends JpaRepository< Task, Long> {
     Optional<List<Task>> findByUserId(Long userId);
     Optional<List<Task>> findByProjectId(Long userId);
+
+    boolean existsByCode(String code);
 }
 

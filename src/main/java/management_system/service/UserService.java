@@ -1,6 +1,8 @@
 package management_system.service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import management_system.domain.dto.UserDTO;
 import management_system.domain.entity.Role;
 import management_system.domain.entity.User;
 import management_system.domain.repository.RoleRepository;
@@ -10,6 +12,7 @@ import management_system.exception.ResourceNotFoundException;
 import management_system.payload.CreateUserRequest;
 import management_system.payload.UpdateUserRequest;
 import management_system.service.impl.IUserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,8 @@ public class UserService implements IUserService {
     private final RoleRepository roleRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -44,7 +49,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User createUser(CreateUserRequest request) {
+    public User createUser( CreateUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AlreadyExistsException("User with email " + request.getEmail() + " already exists");
         }
@@ -56,8 +61,8 @@ public class UserService implements IUserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setCreated_at(LocalDate.now());
-        user.setCreated_by("System");
+        user.setCreatedAt(LocalDate.now());
+        user.setCreatedBy("System");
         user.setRole(Set.of(defaultRole));
 
         return userRepository.save(user);
@@ -70,8 +75,8 @@ public class UserService implements IUserService {
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setUpdated_at(LocalDate.now());
-        user.setUpdated_by("System");
+        user.setUpdatedAt(LocalDate.now());
+        user.setUpdatedBy("System");
 
         return userRepository.save(user);
     }
@@ -83,9 +88,16 @@ public class UserService implements IUserService {
         );
 
         // Xóa mềm (Soft delete)
-        user.setIs_deleted(1);
-        user.setUpdated_at(LocalDate.now());
-        user.setUpdated_by("System");
+        user.setIsDeleted(1);
+        user.setUpdatedAt(LocalDate.now());
+        user.setUpdatedBy("System");
         userRepository.save(user);
+    }
+    public UserDTO convertToDto(User user) {
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    public User convertToEntity(UserDTO userDto) {
+        return modelMapper.map(userDto, User.class);
     }
 }

@@ -2,6 +2,7 @@ package management_system.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import management_system.domain.dto.RoleDTO;
 import management_system.domain.entity.Role;
 import management_system.domain.entity.User;
 import management_system.domain.repository.RoleRepository;
@@ -9,7 +10,9 @@ import management_system.exception.ResourceNotFoundException;
 import management_system.payload.CreateUserRequest;
 import management_system.payload.RoleRequest;
 import management_system.response.ApiResponse;
+import management_system.service.RoleService;
 import management_system.service.impl.IRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +25,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class RoleController {
+    @Autowired
     private final RoleRepository roleRepository;
+    @Autowired
     private final IRoleService roleService;
 
     @GetMapping("/{id}")
-    public ApiResponse<Role> getRoleById(@PathVariable("id") Long roleId) {
+    public ApiResponse<RoleDTO> getRoleById(@PathVariable("id") Long roleId) {
         Role role = roleService.getRoleById(roleId);
         if (role!= null) {
             log.info(role.getId().toString());
-            return ApiResponse.<Role>builder()
-                    .result(role)
+            return ApiResponse.<RoleDTO>builder()
+                    .result(roleService.convertToDto(role))
                     .build();
         } else {
             throw new ResourceNotFoundException("Role not found with ID: " + roleId);
@@ -39,12 +44,12 @@ public class RoleController {
     }
 
     @GetMapping("/code/{code}")
-    public ApiResponse<Role> getRoleByCode(@PathVariable("code") String code) {
+    public ApiResponse<RoleDTO> getRoleByCode(@PathVariable("code") String code) {
         Role role = roleService.getRoleByCode(code);
         if (role != null) {
             log.info(role.getId().toString());
-            return ApiResponse.<Role>builder()
-                    .result(role)
+            return ApiResponse.<RoleDTO>builder()
+                    .result(roleService.convertToDto(role))
                     .build();
         } else {
             throw new ResourceNotFoundException("Role not found with code: " + code);
@@ -52,23 +57,24 @@ public class RoleController {
     }
 
     @GetMapping("/name/{name}")
-    public ApiResponse<Role> getRoleByName(@PathVariable("name") String name) {
+    public ApiResponse<RoleDTO> getRoleByName(@PathVariable("name") String name) {
         Role role = roleService.getRoleByName(name);
         if (role != null) {
             log.info(role.getId().toString());
-            return ApiResponse.<Role>builder()
-                    .result(role)
+            return ApiResponse.<RoleDTO>builder()
+                    .result(roleService.convertToDto(role))
                     .build();
         } else {
             throw new ResourceNotFoundException("Role not found with code: " + name);
         }
     }
     @GetMapping()
-    public ApiResponse<List<Role>> getAllRole(){
+    public ApiResponse<List<RoleDTO>> getAllRole(){
         List<Role> roles = roleService.getAllRole();
-        return ApiResponse.<List<Role>>builder()
+        return ApiResponse.<List<RoleDTO>>builder()
                 .message("danh sach quyen")
-                .result(roles).build();
+                .result(roles.stream().map(role -> roleService.convertToDto(role)).toList())
+                .build();
     }
 
     @DeleteMapping("/{id}")
@@ -98,10 +104,10 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<Role> updateRole(@PathVariable Long id, @RequestBody RoleRequest request){
+    public ApiResponse<RoleDTO> updateRole(@PathVariable Long id, @RequestBody RoleRequest request){
         Role role = roleService.updateRole(id, request);
-        return ApiResponse.<Role>builder()
-                .result(role)
+        return ApiResponse.<RoleDTO>builder()
+                .result(roleService.convertToDto(role))
                 .message("update thanh xcong").build();
     }
 }

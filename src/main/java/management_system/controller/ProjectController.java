@@ -1,6 +1,8 @@
 package management_system.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import management_system.domain.dto.ProjectDTO;
 import management_system.domain.entity.Project;
 import management_system.payload.ProjectRequest;
 import management_system.payload.UpdateProjectRequest;
@@ -18,48 +20,47 @@ public class ProjectController {
     @Autowired
     private IProjectService projectService;
     @GetMapping
-    public ApiResponse<List<Project>> getAllProjects() {
+    public ApiResponse<List<ProjectDTO>> getAllProjects() {
         List<Project> projects = projectService.getAllProject();
-        return ApiResponse.<List<Project>>builder()
+        return ApiResponse.<List<ProjectDTO>>builder()
                 .message("danh sach cac project")
-                .result(projects)
+                .result(projects.stream().map(project -> projectService.convertToDto(project)).toList())
                 .build();
     }
 
     @GetMapping("/{projectId}")
-    public ApiResponse<Project> getProjectById(@PathVariable Long projectId) {
+    public ApiResponse<ProjectDTO> getProjectById(@PathVariable Long projectId) {
         Project project = projectService.getProjectById(projectId);
-        return ApiResponse.<Project>builder()
+        return ApiResponse.<ProjectDTO>builder()
                 .message("thong tin project")
-                .result(project)
+                .result(projectService.convertToDto(project))
                 .build();
     }
 
     @GetMapping("/user/{userId}")
-    public ApiResponse<List<Project>> getProjectsByUserId(@PathVariable Long userId) {
+    public ApiResponse<List<ProjectDTO>> getProjectsByUserId(@PathVariable Long userId) {
         List<Project> projects = projectService.getProjectByUserId(userId);
-        return ApiResponse.<List<Project>>builder()
+        return ApiResponse.<List<ProjectDTO>>builder()
                 .message("danh sach cac project theo user")
-                .result(projects)
+                .result(projects.stream().map(project -> projectService.convertToDto(project)).toList())
                 .build();
     }
 
     @PostMapping
-    public ApiResponse<Project> createProject(@RequestBody ProjectRequest request){
+    public ApiResponse<ProjectDTO> createProject(@Valid @RequestBody ProjectRequest request){
         Project project = projectService.createProject(request);
-        return ApiResponse.<Project>builder()
+        return ApiResponse.<ProjectDTO>builder()
                 .message("tao moi project thanh cong")
-                .result(project)
+                .result(projectService.convertToDto(project))
                 .build();
     }
 
-    // Sửa thông tin project
     @PutMapping("/{projectId}")
-    public ApiResponse<Project> updateProject(@RequestBody UpdateProjectRequest request, @PathVariable Long projectId) {
+    public ApiResponse<ProjectDTO> updateProject(@RequestBody UpdateProjectRequest request, @PathVariable Long projectId) {
         Project updatedProject = projectService.updateProject(request, projectId);
-        return ApiResponse.<Project>builder()
+        return ApiResponse.<ProjectDTO>builder()
                 .message("cap nhat thong tin project thanh cong")
-                .result(updatedProject)
+                .result(projectService.convertToDto(updatedProject))
                 .build();
     }
 

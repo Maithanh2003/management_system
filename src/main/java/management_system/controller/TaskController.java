@@ -1,11 +1,11 @@
 package management_system.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import management_system.domain.dto.TaskDTO;
 import management_system.domain.entity.Task;
-import management_system.domain.entity.User;
 import management_system.payload.CreateTaskRequest;
 import management_system.payload.UpdateTaskRequest;
-import management_system.payload.UpdateUserRequest;
 import management_system.response.ApiResponse;
 import management_system.payload.AddUserTask;
 import management_system.service.impl.ITaskService;
@@ -22,55 +22,55 @@ public class TaskController {
     private final ITaskService taskService;
 
     @GetMapping
-    public ApiResponse<List<Task>> getAllTasks() {
+    public ApiResponse<List<TaskDTO>> getAllTasks() {
         List<Task> tasks = taskService.getAllTask();
-        return ApiResponse.<List<Task>>builder()
+        return ApiResponse.<List<TaskDTO>>builder()
                 .message("danh sach cac task cua he thong")
-                .result(tasks)
+                .result(tasks.stream().map(task -> taskService.convertToDto(task)).toList())
                 .build();
     }
 
     @GetMapping("/{taskId}")
-    public ApiResponse<Task> getTaskById(@PathVariable Long taskId) {
+    public ApiResponse<TaskDTO> getTaskById(@PathVariable Long taskId) {
         Task task = taskService.getTaskById(taskId);
-        return ApiResponse.<Task>builder()
+        return ApiResponse.<TaskDTO>builder()
                 .message("thong tin task theo id")
-                .result(task)
+                .result(taskService.convertToDto(task))
                 .build();
     }
 
     @GetMapping("/user/{userId}")
-    public ApiResponse<List<Task>> getTasksByUserId(@PathVariable Long userId) {
+    public ApiResponse<List<TaskDTO>> getTasksByUserId(@PathVariable Long userId) {
         List<Task> tasks = taskService.getTaskByUserId(userId);
-        return ApiResponse.<List<Task>>builder()
+        return ApiResponse.<List<TaskDTO>>builder()
                 .message("danh sach cac task theo user ID")
-                .result(tasks)
+                .result(tasks.stream().map(task -> taskService.convertToDto(task)).toList())
                 .build();
     }
 
     @GetMapping("/project/{projectId}")
-    public ApiResponse<List<Task>> getTasksByProjectId(@PathVariable Long projectId) {
+    public ApiResponse<List<TaskDTO>> getTasksByProjectId(@PathVariable Long projectId) {
         List<Task> tasks = taskService.getTaskByProjectId(projectId);
-        return ApiResponse.<List<Task>>builder()
+        return ApiResponse.<List<TaskDTO>>builder()
                 .message("danh sach cac task theo project id")
-                .result(tasks)
+                .result(tasks.stream().map(task -> taskService.convertToDto(task)).toList())
                 .build();
     }
     @PostMapping
-    public ApiResponse<Task> createTask(@RequestBody CreateTaskRequest request) {
+    public ApiResponse<TaskDTO> createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task task = taskService.createTask(request);
-        return ApiResponse.<Task>builder()
+        return ApiResponse.<TaskDTO>builder()
                 .message("tao moi 1 task thanh cong")
-                .result(task)
+                .result(taskService.convertToDto(task))
                 .build();
     }
 
     @PostMapping("/{taskId}/assign-user")
-    public ApiResponse<Task> addUserToTask(@RequestBody AddUserTask request, @PathVariable Long taskId) {
+    public ApiResponse<TaskDTO> addUserToTask(@RequestBody AddUserTask request, @PathVariable Long taskId) {
         Task updatedTask = taskService.addUserTask(request, taskId);
-        return ApiResponse.<Task>builder()
+        return ApiResponse.<TaskDTO>builder()
                 .message("User đã được dang ki vào task")
-                .result(updatedTask)
+                .result(taskService.convertToDto(updatedTask))
                 .build();
     }
     @DeleteMapping("/{id}")
@@ -90,14 +90,14 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<Task> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request) {
+    public ApiResponse<TaskDTO> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request) {
         try {
             Task updatedTask = taskService.updateTask(request, id);
-            return ApiResponse.<Task>builder()
-                    .result(updatedTask)
+            return ApiResponse.<TaskDTO>builder()
+                    .result(taskService.convertToDto(updatedTask))
                     .build();
         } catch (Exception e) {
-            return ApiResponse.<Task>builder()
+            return ApiResponse.<TaskDTO>builder()
                     .result(null)
                     .message("error")
                     .code(404)

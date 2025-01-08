@@ -18,22 +18,22 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "is_deleted")
-    private int is_deleted =0;
+    private int isDeleted =0;
     @Column(name = "created_at")
-    private LocalDate created_at;
+    private LocalDate createdAt;
     @Column(name = "created_by")
-    private String created_by;
+    private String createdBy;
     @Column(name = "updated_at")
-    private LocalDate updated_at;
+    private LocalDate updatedAt;
     @Column(name = "updated_by")
-    private String updated_by;
+    private String updatedBy;
     @Column(name = "avatar")
     private String avatar;
     @ManyToMany

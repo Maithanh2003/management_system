@@ -1,6 +1,7 @@
 package management_system.service;
 
 import lombok.AllArgsConstructor;
+import management_system.domain.dto.TaskDTO;
 import management_system.domain.entity.Project;
 import management_system.domain.entity.Task;
 import management_system.domain.entity.User;
@@ -12,12 +13,12 @@ import management_system.payload.CreateTaskRequest;
 import management_system.payload.AddUserTask;
 import management_system.payload.UpdateTaskRequest;
 import management_system.service.impl.ITaskService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -28,6 +29,8 @@ public class TaskService implements ITaskService {
     private final ProjectRepository projectRepository;
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final ModelMapper modelMapper;
 
     @Override
     public List<Task> getAllTask() {
@@ -58,8 +61,10 @@ public class TaskService implements ITaskService {
     @Override
     public Task createTask(CreateTaskRequest request) {
         Task newTask = new Task();
-        newTask.setCreated_at(LocalDate.now());
-        newTask.setCreated_by("system");
+        if (taskRepository.existsByCode(request.getCode()))
+            throw new IllegalArgumentException("Code already exists, please choose a different code.");
+        newTask.setCreatedAt(LocalDate.now());
+        newTask.setCreatedBy("system");
         newTask.setName(request.getName());
         newTask.setCode(request.getCode());
         Project project = projectRepository.findByName(request.getProject());
@@ -105,11 +110,19 @@ public class TaskService implements ITaskService {
         Task task =  taskRepository.findById(taskId).orElseThrow(
                 ()-> new ResourceNotFoundException("task not found")
         );
-        task.setUpdated_by("system");
-        task.setUpdated_at(LocalDate.now());
+        task.setUpdatedBy("system");
+        task.setUpdatedAt(LocalDate.now());
         task.setCode(request.getCode());
         task.setName(request.getName());
         return taskRepository.save(task);
+    }
+    @Override
+    public TaskDTO convertToDto(Task task) {
+        return modelMapper.map(task, TaskDTO.class);
+    }
+    @Override
+    public Task convertToEntity(TaskDTO taskDto) {
+        return modelMapper.map(taskDto, Task.class);
     }
 }
 

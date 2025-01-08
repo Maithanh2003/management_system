@@ -1,51 +1,53 @@
 package management_system.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import management_system.domain.dto.UserDTO;
 import management_system.domain.entity.User;
 import management_system.exception.ResourceNotFoundException;
 import management_system.payload.CreateUserRequest;
 import management_system.payload.UpdateUserRequest;
 import management_system.response.ApiResponse;
 import management_system.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-
+    @Autowired
     private final UserService userService;
 
     @PostMapping
-    public ApiResponse<User> createUser(@RequestBody CreateUserRequest request) {
+    public ApiResponse<UserDTO> createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
             User savedUser = userService.createUser(request);
-            return ApiResponse.<User>builder()
-                    .result(savedUser)
+            UserDTO userDTO = userService.convertToDto(savedUser);
+            return ApiResponse.<UserDTO>builder()
+                    .result(userDTO)
                     .build();
         } catch (Exception e) {
-            return ApiResponse.<User>builder()
+            return ApiResponse.<UserDTO>builder()
                     .result(null)
-                    .message("error")
+                    .message(e.getMessage())
                     .code(404)
                     .build();
         }
     }
 
     @GetMapping
-    public ApiResponse<List<User>> getAllUsers() {
+    public ApiResponse<List<UserDTO>> getAllUsers() {
         try {
             List<User> user = userService.getAllUser();
-            return ApiResponse.<List<User>>builder()
-                    .result(user)
+            List<UserDTO> userDTOS = user.stream().map(users -> userService.convertToDto(users)).toList();
+            return ApiResponse.<List<UserDTO>>builder()
+                    .result(userDTOS)
                     .build();
         } catch (Exception e) {
-            return ApiResponse.<List<User>>builder()
+            return ApiResponse.<List<UserDTO>>builder()
                     .result(null)
                     .message("error")
                     .code(404)
@@ -54,22 +56,24 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<User> getUserById(@PathVariable Long id) {
+    public ApiResponse<UserDTO> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return ApiResponse.<User>builder()
-                .result(user)
+        UserDTO UserDto = userService.convertToDto(user);
+        return ApiResponse.<UserDTO>builder()
+                .result(UserDto)
                 .build();
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
+    public ApiResponse<UserDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
         try {
             User updatedUser = userService.updateUser(request, id);
-            return ApiResponse.<User>builder()
-                    .result(updatedUser)
+            UserDTO UserDto = userService.convertToDto(updatedUser);
+            return ApiResponse.<UserDTO>builder()
+                    .result(UserDto)
                     .build();
         } catch (Exception e) {
-            return ApiResponse.<User>builder()
+            return ApiResponse.<UserDTO>builder()
                     .result(null)
                     .message("error")
                     .code(404)

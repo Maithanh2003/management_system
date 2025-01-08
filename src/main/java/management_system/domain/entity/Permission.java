@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Builder
 @Getter
@@ -22,13 +21,13 @@ public class Permission {
     @Column(name = "code",nullable = false, unique = true)
     private String code;
     @Column(name = "created_at")
-    private LocalDate created_at;
+    private LocalDate createdAt;
     @Column(name = "created_by")
-    private String created_by;
+    private String createdBy;
     @Column(name = "updated_at")
-    private LocalDate updated_at;
+    private LocalDate updatedAt;
     @Column(name = "updated_by")
-    private String updated_by;
+    private String updatedBy;
     @Column(name = "is_deleted")
-    private int is_deleted =0;
+    private int isDeleted =0;
 }
