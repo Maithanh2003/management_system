@@ -1,5 +1,6 @@
 package management_system.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import management_system.domain.dto.UserDTO;
 import management_system.domain.entity.User;
@@ -8,6 +9,7 @@ import management_system.payload.CreateUserRequest;
 import management_system.payload.UpdateUserRequest;
 import management_system.response.ApiResponse;
 import management_system.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +18,11 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-
+    @Autowired
     private final UserService userService;
 
     @PostMapping
-    public ApiResponse<UserDTO> createUser(@RequestBody CreateUserRequest request) {
+    public ApiResponse<UserDTO> createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
             User savedUser = userService.createUser(request);
             UserDTO userDTO = userService.convertToDto(savedUser);
@@ -30,7 +32,7 @@ public class UserController {
         } catch (Exception e) {
             return ApiResponse.<UserDTO>builder()
                     .result(null)
-                    .message("error")
+                    .message(e.getMessage())
                     .code(404)
                     .build();
         }

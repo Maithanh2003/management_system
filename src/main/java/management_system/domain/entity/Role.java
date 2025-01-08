@@ -19,7 +19,7 @@ public class Role {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Column(name = "code")
+    @Column(name = "code",nullable = false, unique = true)
     private String code;
     @Column(name = "created_at")
     private LocalDate createdAt;
@@ -31,7 +31,6 @@ public class Role {
     private String updatedBy;
     @Column(name = "is_deleted")
     private int isDeleted =0;
-//    @ManyToMany
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "role_permission",

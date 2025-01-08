@@ -1,5 +1,6 @@
 package management_system.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import management_system.domain.dto.TaskDTO;
 import management_system.domain.entity.Task;
@@ -21,11 +22,11 @@ public class TaskController {
     private final ITaskService taskService;
 
     @GetMapping
-    public ApiResponse<List<Task>> getAllTasks() {
+    public ApiResponse<List<TaskDTO>> getAllTasks() {
         List<Task> tasks = taskService.getAllTask();
-        return ApiResponse.<List<Task>>builder()
+        return ApiResponse.<List<TaskDTO>>builder()
                 .message("danh sach cac task cua he thong")
-                .result(tasks)
+                .result(tasks.stream().map(task -> taskService.convertToDto(task)).toList())
                 .build();
     }
 
@@ -56,7 +57,7 @@ public class TaskController {
                 .build();
     }
     @PostMapping
-    public ApiResponse<TaskDTO> createTask(@RequestBody CreateTaskRequest request) {
+    public ApiResponse<TaskDTO> createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task task = taskService.createTask(request);
         return ApiResponse.<TaskDTO>builder()
                 .message("tao moi 1 task thanh cong")

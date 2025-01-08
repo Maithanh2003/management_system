@@ -1,5 +1,6 @@
 package management_system.service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import management_system.domain.dto.UserDTO;
 import management_system.domain.entity.Role;
@@ -48,7 +49,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User createUser(CreateUserRequest request) {
+    public User createUser( CreateUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AlreadyExistsException("User with email " + request.getEmail() + " already exists");
         }

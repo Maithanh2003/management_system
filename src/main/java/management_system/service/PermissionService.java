@@ -3,6 +3,7 @@ package management_system.service;
 import lombok.RequiredArgsConstructor;
 import management_system.domain.entity.Permission;
 import management_system.domain.repository.PermissionRepository;
+import management_system.exception.AlreadyExistsException;
 import management_system.exception.ResourceNotFoundException;
 import management_system.payload.PermissionRequest;
 import management_system.service.impl.IPermissionService;
@@ -45,6 +46,9 @@ public class PermissionService implements IPermissionService {
     public Permission createPermission(PermissionRequest request) {
         String name = request.getName();
         String code = request.getCode();
+        if (permissionRepository.existsByCode(request.getCode())) {
+            throw new IllegalArgumentException("Code already exists, please choose a different code.");
+        }
         var permission = new Permission();
 
         permission.setName(name);

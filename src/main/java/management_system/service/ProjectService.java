@@ -45,6 +45,8 @@ public class ProjectService implements IProjectService {
     @Override
     public Project createProject(ProjectRequest request) {
         Project project = new Project();
+        if (projectRepository.existsByCode(request.getCode()))
+            throw new IllegalArgumentException("Code already exists, please choose a different code.");
         project.setCode(request.getCode());
         project.setName(request.getName());
         project.setCreatedAt(LocalDate.now());

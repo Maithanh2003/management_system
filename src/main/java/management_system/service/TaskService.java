@@ -61,6 +61,8 @@ public class TaskService implements ITaskService {
     @Override
     public Task createTask(CreateTaskRequest request) {
         Task newTask = new Task();
+        if (taskRepository.existsByCode(request.getCode()))
+            throw new IllegalArgumentException("Code already exists, please choose a different code.");
         newTask.setCreatedAt(LocalDate.now());
         newTask.setCreatedBy("system");
         newTask.setName(request.getName());

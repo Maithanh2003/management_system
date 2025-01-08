@@ -12,6 +12,7 @@ import management_system.payload.RoleRequest;
 import management_system.response.ApiResponse;
 import management_system.service.RoleService;
 import management_system.service.impl.IRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class RoleController {
+    @Autowired
     private final RoleRepository roleRepository;
+    @Autowired
     private final IRoleService roleService;
 
     @GetMapping("/{id}")

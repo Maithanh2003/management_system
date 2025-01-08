@@ -1,5 +1,6 @@
 package management_system.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import management_system.domain.dto.ProjectDTO;
 import management_system.domain.entity.Project;
@@ -46,7 +47,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ApiResponse<ProjectDTO> createProject(@RequestBody ProjectRequest request){
+    public ApiResponse<ProjectDTO> createProject(@Valid @RequestBody ProjectRequest request){
         Project project = projectService.createProject(request);
         return ApiResponse.<ProjectDTO>builder()
                 .message("tao moi project thanh cong")

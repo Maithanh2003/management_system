@@ -72,6 +72,9 @@ public class RoleService implements IRoleService {
     @Override
     public Role createRole(RoleRequest request) {
         var role = new Role();
+        if (roleRepository.existsByCode(request.getCode())) {
+            throw new IllegalArgumentException("Code already exists, please choose a different code.");
+        }
         role.setName(request.getName());
         role.setCode(request.getCode());
         var permissions = request.getPermission().stream()
