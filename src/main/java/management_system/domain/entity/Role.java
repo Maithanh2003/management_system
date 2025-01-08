@@ -22,15 +22,15 @@ public class Role {
     @Column(name = "code")
     private String code;
     @Column(name = "created_at")
-    private LocalDate created_at;
+    private LocalDate createdAt;
     @Column(name = "created_by")
-    private String created_by;
+    private String createdBy;
     @Column(name = "updated_at")
-    private LocalDate updated_at;
+    private LocalDate updatedAt;
     @Column(name = "updated_by")
-    private String updated_by;
+    private String updatedBy;
     @Column(name = "is_deleted")
-    private int is_deleted =0;
+    private int isDeleted =0;
 //    @ManyToMany
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -44,9 +44,9 @@ public class Role {
         return id;
     }
     public void markAsDeleted() {
-        this.is_deleted = 1;
-        this.updated_at = LocalDate.now();
-        this.updated_by = "system";
+        this.isDeleted = 1;
+        this.updatedAt = LocalDate.now();
+        this.updatedBy = "system";
     }
 
 }

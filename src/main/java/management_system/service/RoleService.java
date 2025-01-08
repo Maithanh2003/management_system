@@ -1,6 +1,7 @@
 package management_system.service;
 
 import lombok.RequiredArgsConstructor;
+import management_system.domain.dto.RoleDTO;
 import management_system.domain.entity.Permission;
 import management_system.domain.entity.Role;
 import management_system.domain.repository.PermissionRepository;
@@ -8,6 +9,7 @@ import management_system.domain.repository.RoleRepository;
 import management_system.exception.ResourceNotFoundException;
 import management_system.payload.RoleRequest;
 import management_system.service.impl.IRoleService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ public class RoleService implements IRoleService {
     private final RoleRepository roleRepository;
     @Autowired
     private final PermissionRepository permissionRepository;
+    @Autowired
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -74,8 +78,8 @@ public class RoleService implements IRoleService {
                 .map(permissionRepository::findPermissionByCode)
                 .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
-        role.setCreated_at(LocalDate.now());
-        role.setCreated_by("System");
+        role.setCreatedAt(LocalDate.now());
+        role.setCreatedBy("System");
         role.setPermission(permissions);
 
         return roleRepository.save(role);
@@ -94,9 +98,17 @@ public class RoleService implements IRoleService {
         role.getPermission().addAll(additionalPermissions);
         role.setName(request.getName());
         role.setCode(request.getCode());
-        role.setUpdated_at(LocalDate.now());
-        role.setUpdated_by("System");
+        role.setUpdatedAt(LocalDate.now());
+        role.setUpdatedBy("System");
         return roleRepository.save(role);
 
+    }
+    @Override
+    public RoleDTO convertToDto(Role role) {
+        return modelMapper.map(role, RoleDTO.class);
+    }
+    @Override
+    public Role convertToEntity(RoleDTO roleDto) {
+        return modelMapper.map(roleDto, Role.class);
     }
 }

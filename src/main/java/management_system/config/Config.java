@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import management_system.config.jwt.AuthTokenFilter;
 import management_system.config.jwt.JwtAuthEntryPoint;
 import management_system.config.user.SystemUserDetailService;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +37,10 @@ public class Config {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-//        return NoOpPasswordEncoder.getInstance();
+    }
+    @Bean
+    public ModelMapper modelMapper (){
+        return new ModelMapper();
     }
     @Bean
     public AuthTokenFilter authTokenFilter(){

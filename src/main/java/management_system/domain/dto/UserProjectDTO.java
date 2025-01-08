@@ -1,4 +1,5 @@
-package management_system.payload;
+package management_system.domain.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -6,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserRequest {
+@AllArgsConstructor
+public class UserProjectDTO {
+    private Long id;
     private String name;
     private String email;
-    private String password;
-    private String avatar ;
+    private String avatar;
 }

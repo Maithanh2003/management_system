@@ -1,20 +1,19 @@
 package management_system.service;
 
 import lombok.AllArgsConstructor;
+import management_system.domain.dto.ProjectDTO;
 import management_system.domain.entity.Project;
-import management_system.domain.entity.Role;
 import management_system.domain.repository.ProjectRepository;
-import management_system.domain.repository.TaskRepository;
 import management_system.exception.ResourceNotFoundException;
 import management_system.payload.UpdateProjectRequest;
 import management_system.payload.ProjectRequest;
 import management_system.service.impl.IProjectService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +21,7 @@ public class ProjectService implements IProjectService {
     @Autowired
     private final ProjectRepository projectRepository;
     @Autowired
-    private final TaskRepository taskRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<Project> getAllProject() {
@@ -48,8 +47,8 @@ public class ProjectService implements IProjectService {
         Project project = new Project();
         project.setCode(request.getCode());
         project.setName(request.getName());
-        project.setCreated_at(LocalDate.now());
-        project.setCreated_by("system");
+        project.setCreatedAt(LocalDate.now());
+        project.setCreatedBy("system");
         return projectRepository.save(project);
     }
 
@@ -60,8 +59,8 @@ public class ProjectService implements IProjectService {
         );
         project.setName(request.getName());
         project.setCode(request.getCode());
-        project.setUpdated_at(LocalDate.now());
-        project.setUpdated_by("system");
+        project.setUpdatedAt(LocalDate.now());
+        project.setUpdatedBy("system");
         return projectRepository.save(project);
     }
 
@@ -72,5 +71,14 @@ public class ProjectService implements IProjectService {
         );
         project.markAsDeleted();
         projectRepository.save(project);
+    }
+
+    @Override
+    public ProjectDTO convertToDto(Project project) {
+        return modelMapper.map(project, ProjectDTO.class);
+    }
+    @Override
+    public Project convertToEntity(ProjectDTO projectDto) {
+        return modelMapper.map(projectDto, Project.class);
     }
 }
