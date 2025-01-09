@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import management_system.config.jwt.JwtUtils;
 import management_system.config.user.SystemUserDetails;
+import management_system.domain.constant.ResponseConstants;
 import management_system.domain.entity.User;
 import management_system.domain.repository.UserRepository;
 import management_system.exception.ResourceNotFoundException;
@@ -53,15 +54,31 @@ public class AuthController {
             String jwt = jwtUtils.generateToken(authentication);
             SystemUserDetails userDetails = (SystemUserDetails) authentication.getPrincipal();
             JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
-            return ResponseEntity.ok(ApiResponse.builder().message("login success").result(jwtResponse).build());
+            return ResponseEntity.ok(
+                    ApiResponse.<JwtResponse>builder()
+                            .code(ResponseConstants.SUCCESS_CODE)
+                            .message(ResponseConstants.SUCCESS_MESSAGE)
+                            .result(jwtResponse)
+                            .build()
+            );
         } catch (AuthenticationException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.builder().message("xay ra loi").result(null).build());
+                    .body(ApiResponse.<JwtResponse>builder()
+                            .code(ResponseConstants.AUTH_FAILURE_CODE)
+                            .message(ResponseConstants.AUTH_FAILURE_MESSAGE)
+                            .result(null)
+                            .build()
+                    );
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.builder().message("An unexpected error occurred").result(null).build());
+                    .body(ApiResponse.<JwtResponse>builder()
+                            .code(ResponseConstants.ERROR_CODE)
+                            .message(ResponseConstants.ERROR_MESSAGE)
+                            .result(null)
+                            .build()
+                    );
         }
     }
 

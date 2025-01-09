@@ -1,6 +1,7 @@
 package management_system.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import management_system.domain.constant.AuthConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,12 +19,19 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<Map<String, Object>>handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> fieldErrors = new HashMap<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.put(error.getField(), error.getDefaultMessage());
+            fieldErrors.put(error.getField(), error.getDefaultMessage());
         }
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("errors", fieldErrors);
+        errorResponse.put("message", AuthConstants.VALIDATION_FAILED_MESSAGE);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -36,7 +44,7 @@ public class GlobalExceptionHandler {
     @ResponseBody public Map<String, Object> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
         Map<String, Object> errorDetails = new HashMap<>();
         errorDetails.put("status", HttpStatus.FORBIDDEN.value());
-        errorDetails.put("message", "khong co quyen truy cap");
+        errorDetails.put("message", AuthConstants.ACCESS_DENIED_MESSAGE);
         errorDetails.put("path", request.getRequestURI());
         return errorDetails;
     }

@@ -2,6 +2,7 @@ package management_system.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import management_system.domain.constant.ResponseConstants;
 import management_system.domain.dto.RoleDTO;
 import management_system.domain.entity.Role;
 import management_system.domain.entity.User;
@@ -63,6 +64,8 @@ public class RoleController {
         if (role != null) {
             log.info(role.getId().toString());
             return ApiResponse.<RoleDTO>builder()
+                    .code(ResponseConstants.SUCCESS_CODE)
+                    .message(ResponseConstants.SUCCESS_MESSAGE)
                     .result(roleService.convertToDto(role))
                     .build();
         } else {
@@ -73,7 +76,8 @@ public class RoleController {
     public ApiResponse<List<RoleDTO>> getAllRole(){
         List<Role> roles = roleService.getAllRole();
         return ApiResponse.<List<RoleDTO>>builder()
-                .message("danh sach quyen")
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(roles.stream().map(role -> roleService.convertToDto(role)).toList())
                 .build();
     }
@@ -84,13 +88,13 @@ public class RoleController {
         try {
             roleService.deleteRole(id);
             return ApiResponse.<Void>builder()
-                    .message("Role deleted successfully")
-                    .code(204)
+                    .code(ResponseConstants.SUCCESS_CODE)
+                    .message(ResponseConstants.SUCCESS_MESSAGE)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<Void>builder()
-                    .message("error")
-                    .code(404)
+                    .code(ResponseConstants.ERROR_CODE)
+                    .message(ResponseConstants.ERROR_MESSAGE)
                     .build();
         }
     }
@@ -99,7 +103,8 @@ public class RoleController {
     public ApiResponse<Role> createRole(@RequestBody RoleRequest request){
         Role role = roleService.createRole(request);
         return ApiResponse.<Role>builder()
-                .message("da them role thanh cong")
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(role)
                 .build();
 
@@ -111,6 +116,8 @@ public class RoleController {
         Role role = roleService.updateRole(id, request);
         return ApiResponse.<RoleDTO>builder()
                 .result(roleService.convertToDto(role))
-                .message("update thanh xcong").build();
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
+                .build();
     }
 }

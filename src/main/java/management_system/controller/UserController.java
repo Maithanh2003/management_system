@@ -3,6 +3,7 @@ package management_system.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import management_system.domain.constant.ResponseConstants;
 import management_system.domain.dto.UserDTO;
 import management_system.domain.entity.User;
 import management_system.exception.ResourceNotFoundException;
@@ -34,13 +35,15 @@ public class UserController {
             User savedUser = userService.createUser(request);
             UserDTO userDTO = userService.convertToDto(savedUser);
             return ApiResponse.<UserDTO>builder()
+                    .code(ResponseConstants.SUCCESS_CODE)
+                    .message(ResponseConstants.SUCCESS_MESSAGE)
                     .result(userDTO)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<UserDTO>builder()
                     .result(null)
-                    .message(e.getMessage())
-                    .code(404)
+                    .code(ResponseConstants.ERROR_CODE)
+                    .message(ResponseConstants.ERROR_MESSAGE)
                     .build();
         }
     }
@@ -59,13 +62,15 @@ public class UserController {
             List<User> user = userService.getAllUser();
             List<UserDTO> userDTOS = user.stream().map(users -> userService.convertToDto(users)).toList();
             return ApiResponse.<List<UserDTO>>builder()
+                    .code(ResponseConstants.SUCCESS_CODE)
+                    .message(ResponseConstants.SUCCESS_MESSAGE)
                     .result(userDTOS)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<List<UserDTO>>builder()
                     .result(null)
-                    .message("error")
-                    .code(404)
+                    .code(ResponseConstants.ERROR_CODE)
+                    .message(ResponseConstants.ERROR_MESSAGE)
                     .build();
         }
     }
@@ -76,6 +81,8 @@ public class UserController {
         User user = userService.getUserById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         UserDTO UserDto = userService.convertToDto(user);
         return ApiResponse.<UserDTO>builder()
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(UserDto)
                 .build();
     }
@@ -87,13 +94,15 @@ public class UserController {
             User updatedUser = userService.updateUser(request, id);
             UserDTO UserDto = userService.convertToDto(updatedUser);
             return ApiResponse.<UserDTO>builder()
+                    .code(ResponseConstants.SUCCESS_CODE)
+                    .message(ResponseConstants.SUCCESS_MESSAGE)
                     .result(UserDto)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<UserDTO>builder()
                     .result(null)
-                    .message("error")
-                    .code(404)
+                    .code(ResponseConstants.ERROR_CODE)
+                    .message(ResponseConstants.ERROR_MESSAGE)
                     .build();
         }
     }
@@ -104,13 +113,13 @@ public class UserController {
         try {
             userService.deleteUser(id);
             return ApiResponse.<Void>builder()
-                    .message("User deleted successfully")
-                    .code(204)
+                    .code(ResponseConstants.SUCCESS_CODE)
+                    .message(ResponseConstants.SUCCESS_MESSAGE)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<Void>builder()
-                    .message("error")
-                    .code(404)
+                    .code(ResponseConstants.ERROR_CODE)
+                    .message(ResponseConstants.ERROR_MESSAGE)
                     .build();
         }
     }

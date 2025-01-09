@@ -2,6 +2,7 @@ package management_system.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import management_system.domain.constant.ResponseConstants;
 import management_system.domain.dto.ProjectDTO;
 import management_system.domain.entity.Project;
 import management_system.payload.ProjectRequest;
@@ -24,7 +25,8 @@ public class ProjectController {
     public ApiResponse<List<ProjectDTO>> getAllProjects() {
         List<Project> projects = projectService.getAllProject();
         return ApiResponse.<List<ProjectDTO>>builder()
-                .message("danh sach cac project")
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(projects.stream().map(project -> projectService.convertToDto(project)).toList())
                 .build();
     }
@@ -33,7 +35,8 @@ public class ProjectController {
     public ApiResponse<ProjectDTO> getProjectById(@PathVariable Long projectId) {
         Project project = projectService.getProjectById(projectId);
         return ApiResponse.<ProjectDTO>builder()
-                .message("thong tin project")
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(projectService.convertToDto(project))
                 .build();
     }
@@ -42,7 +45,8 @@ public class ProjectController {
     public ApiResponse<List<ProjectDTO>> getProjectsByUserId(@PathVariable Long userId) {
         List<Project> projects = projectService.getProjectByUserId(userId);
         return ApiResponse.<List<ProjectDTO>>builder()
-                .message("danh sach cac project theo user")
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(projects.stream().map(project -> projectService.convertToDto(project)).toList())
                 .build();
     }
@@ -53,6 +57,7 @@ public class ProjectController {
         Project project = projectService.createProject(request);
         return ApiResponse.<ProjectDTO>builder()
                 .message("tao moi project thanh cong")
+                .code(ResponseConstants.SUCCESS_CODE)
                 .result(projectService.convertToDto(project))
                 .build();
     }
@@ -62,7 +67,8 @@ public class ProjectController {
     public ApiResponse<ProjectDTO> updateProject(@RequestBody UpdateProjectRequest request, @PathVariable Long projectId) {
         Project updatedProject = projectService.updateProject(request, projectId);
         return ApiResponse.<ProjectDTO>builder()
-                .message("cap nhat thong tin project thanh cong")
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(projectService.convertToDto(updatedProject))
                 .build();
     }
@@ -73,13 +79,13 @@ public class ProjectController {
         try {
             projectService.deleteProject(id);
             return ApiResponse.<Void>builder()
-                    .message("Project deleted successfully")
-                    .code(1000)
+                    .code(ResponseConstants.SUCCESS_CODE)
+                    .message(ResponseConstants.SUCCESS_MESSAGE)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<Void>builder()
-                    .message("error")
-                    .code(404)
+                    .code(ResponseConstants.ERROR_CODE)
+                    .message(ResponseConstants.ERROR_MESSAGE)
                     .build();
         }
     }

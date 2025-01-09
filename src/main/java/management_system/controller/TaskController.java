@@ -2,6 +2,7 @@ package management_system.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import management_system.domain.constant.ResponseConstants;
 import management_system.domain.dto.TaskDTO;
 import management_system.domain.entity.Task;
 import management_system.payload.CreateTaskRequest;
@@ -64,7 +65,8 @@ public class TaskController {
     public ApiResponse<TaskDTO> createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task task = taskService.createTask(request);
         return ApiResponse.<TaskDTO>builder()
-                .message("tao moi 1 task thanh cong")
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(taskService.convertToDto(task))
                 .build();
     }
@@ -74,7 +76,8 @@ public class TaskController {
     public ApiResponse<TaskDTO> addUserToTask(@RequestBody AddUserTask request, @PathVariable Long taskId) {
         Task updatedTask = taskService.addUserTask(request, taskId);
         return ApiResponse.<TaskDTO>builder()
-                .message("User đã được dang ki vào task")
+                .code(ResponseConstants.SUCCESS_CODE)
+                .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(taskService.convertToDto(updatedTask))
                 .build();
     }
@@ -85,13 +88,13 @@ public class TaskController {
         try {
             taskService.deleteTask(id);
             return ApiResponse.<Void>builder()
-                    .message("task deleted successfully")
-                    .code(1000)
+                    .code(ResponseConstants.SUCCESS_CODE)
+                    .message(ResponseConstants.SUCCESS_MESSAGE)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<Void>builder()
-                    .message("error")
-                    .code(404)
+                    .code(ResponseConstants.ERROR_CODE)
+                    .message(ResponseConstants.ERROR_MESSAGE)
                     .build();
         }
     }
@@ -107,8 +110,8 @@ public class TaskController {
         } catch (Exception e) {
             return ApiResponse.<TaskDTO>builder()
                     .result(null)
-                    .message("error")
-                    .code(404)
+                    .code(ResponseConstants.ERROR_CODE)
+                    .message(ResponseConstants.ERROR_MESSAGE)
                     .build();
         }
     }
