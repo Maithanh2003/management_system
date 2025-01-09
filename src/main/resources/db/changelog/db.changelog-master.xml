@@ -39,5 +39,8 @@
     <changeSet id="10-insert_data_extended" author="yourname">
         <sqlFile path="db/changelog/sql/10insert_data_extended.sql" />
     </changeSet>
+    <changeSet id="11-create-file-table" author="yourname">
+        <sqlFile path="db/changelog/sql/11create_file_table.sql" />
+    </changeSet>
 
 </databaseChangeLog>

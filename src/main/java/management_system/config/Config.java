@@ -32,8 +32,33 @@ import java.util.List;
 public class Config {
     private final SystemUserDetailService systemUserDetailService;
     private final JwtAuthEntryPoint authEntryPoint;
-    private static final List<String> SECURED_URLS =
-            List.of("/users/**");
+private static final List<String> PUBLIC_URLS = List.of(
+        "/roles/**",
+        "/projects/**",
+        "/permissions/**",
+        "/files",
+        "/auth/login",
+        "/tasks/**"
+);
+
+    private static final List<String> ADMIN_URLS = List.of(
+            "/roles",
+            "/roles/{id}",
+            "/projects",
+            "/projects/{projectId}",
+            "/projects/{id}",
+            "/permissions",
+            "/permissions/**",
+            "/files/{id}",
+            "/users",
+            "/users/{id}",
+            "/tasks",
+            "/tasks/{id}",
+            "/tasks/{taskId}/assign-user",
+            "/users/{id}",
+            "/tasks/{taskId}/assign-user"
+
+    );
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -64,12 +89,9 @@ public class Config {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    // Cho phép truy cập không cần xác thực vào các endpoint giao diện đăng nhập
-                    auth.requestMatchers("auth/login").permitAll();
-                    // Yêu cầu xác thực cho các URL đã cấu hình
-                    auth.requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated();
-                    // Các request còn lại được phép truy cập
-                    auth.anyRequest().permitAll();
+                    auth.requestMatchers(PUBLIC_URLS.toArray(String[]::new)).permitAll();
+                    auth.requestMatchers(ADMIN_URLS.toArray(String[]::new)).authenticated();
+                    auth.anyRequest().denyAll();
                 });
         http.authenticationProvider(daoAuthenticationProvider());
         http.addFilterBefore((Filter) authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
