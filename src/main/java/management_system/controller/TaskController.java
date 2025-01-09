@@ -10,6 +10,8 @@ import management_system.response.ApiResponse;
 import management_system.payload.AddUserTask;
 import management_system.service.impl.ITaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +58,8 @@ public class TaskController {
                 .result(tasks.stream().map(task -> taskService.convertToDto(task)).toList())
                 .build();
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<TaskDTO> createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task task = taskService.createTask(request);
@@ -65,6 +69,7 @@ public class TaskController {
                 .build();
     }
 
+    @PostAuthorize("hasRole('ADMIN') || returnObject.result.userId == authentication.principal.id")
     @PostMapping("/{taskId}/assign-user")
     public ApiResponse<TaskDTO> addUserToTask(@RequestBody AddUserTask request, @PathVariable Long taskId) {
         Task updatedTask = taskService.addUserTask(request, taskId);
@@ -73,6 +78,8 @@ public class TaskController {
                 .result(taskService.convertToDto(updatedTask))
                 .build();
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteTask(@PathVariable Long id) {
         try {
@@ -89,6 +96,7 @@ public class TaskController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<TaskDTO> updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request) {
         try {

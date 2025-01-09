@@ -2,8 +2,12 @@ package management_system.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import management_system.config.jwt.JwtUtils;
 import management_system.config.user.SystemUserDetails;
+import management_system.domain.entity.User;
+import management_system.domain.repository.UserRepository;
+import management_system.exception.ResourceNotFoundException;
 import management_system.payload.LoginRequest;
 import management_system.payload.LogoutRequest;
 import management_system.response.ApiResponse;
@@ -27,7 +31,10 @@ import java.util.Date;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@Slf4j
 public class AuthController {
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private final UserService userService;
     @Autowired
@@ -42,7 +49,7 @@ public class AuthController {
                     .authenticate(new UsernamePasswordAuthenticationToken(
                             request.getEmail(), request.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            log.info(authentication.getAuthorities().toString());
             String jwt = jwtUtils.generateToken(authentication);
             SystemUserDetails userDetails = (SystemUserDetails) authentication.getPrincipal();
             JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);

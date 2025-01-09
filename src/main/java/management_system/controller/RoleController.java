@@ -15,6 +15,7 @@ import management_system.service.impl.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -77,8 +78,9 @@ public class RoleController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteUser(@PathVariable Long id) {
+    public ApiResponse<Void> deleteRole(@PathVariable Long id) {
         try {
             roleService.deleteRole(id);
             return ApiResponse.<Void>builder()
@@ -92,7 +94,7 @@ public class RoleController {
                     .build();
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<Role> createRole(@RequestBody RoleRequest request){
         Role role = roleService.createRole(request);
@@ -103,6 +105,7 @@ public class RoleController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<RoleDTO> updateRole(@PathVariable Long id, @RequestBody RoleRequest request){
         Role role = roleService.updateRole(id, request);

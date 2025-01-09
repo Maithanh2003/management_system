@@ -9,6 +9,7 @@ import management_system.payload.UpdateProjectRequest;
 import management_system.response.ApiResponse;
 import management_system.service.impl.IProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class ProjectController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<ProjectDTO> createProject(@Valid @RequestBody ProjectRequest request){
         Project project = projectService.createProject(request);
@@ -55,6 +57,7 @@ public class ProjectController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{projectId}")
     public ApiResponse<ProjectDTO> updateProject(@RequestBody UpdateProjectRequest request, @PathVariable Long projectId) {
         Project updatedProject = projectService.updateProject(request, projectId);
@@ -64,6 +67,7 @@ public class ProjectController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteProject(@PathVariable Long id) {
         try {

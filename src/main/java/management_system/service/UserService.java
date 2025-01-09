@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,7 +33,7 @@ public class UserService implements IUserService {
     @Autowired
     private final ModelMapper modelMapper;
 
-
+    @Transactional
     @Override
     public List<User> getAllUser() {
         return userRepository.findAll();
@@ -53,7 +54,7 @@ public class UserService implements IUserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AlreadyExistsException("User with email " + request.getEmail() + " already exists");
         }
-        Role defaultRole = roleRepository.findByName("User").orElseThrow(
+        Role defaultRole = roleRepository.findByName("ROLE_USER").orElseThrow(
                 () -> new ResourceNotFoundException("Default role not found")
         );
 

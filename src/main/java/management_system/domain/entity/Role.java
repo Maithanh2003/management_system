@@ -17,7 +17,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
     @Column(name = "code",nullable = false, unique = true)
     private String code;
@@ -31,7 +31,8 @@ public class Role {
     private String updatedBy;
     @Column(name = "is_deleted")
     private int isDeleted =0;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
+//    @ManyToMany
     @JoinTable(
             name = "role_permission",
             joinColumns = @JoinColumn(name = "role_id"),

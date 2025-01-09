@@ -24,7 +24,8 @@ public class SystemUserDetails implements UserDetails {
     private Collection<GrantedAuthority> authorities;
     public static SystemUserDetails buildUserDetails(User user){
         List<GrantedAuthority> authorities = user.getRole()
-                .stream().map(role -> new SimpleGrantedAuthority(role.getName()))
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
         return new SystemUserDetails(user.getId(), user.getEmail(), user.getPassword(), authorities);
     }

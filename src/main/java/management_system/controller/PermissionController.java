@@ -9,6 +9,7 @@ import management_system.response.ApiResponse;
 import management_system.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,6 +53,7 @@ public class PermissionController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<Permission> createPermission(@Valid @RequestBody PermissionRequest request) {
         Permission permission = permissionService.createPermission(request);
@@ -59,7 +61,7 @@ public class PermissionController {
                 .message("tao permission thanh cong")
                 .result(permission).build();
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deletePermissionById(@PathVariable Long id) {
         permissionService.deletePermissionById(id);
@@ -68,6 +70,7 @@ public class PermissionController {
                 .result(null).build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/by-code/{code}")
     public ApiResponse<Void> deletePermissionByCode(@PathVariable String code) {
         permissionService.deletePermissionByCode(code);

@@ -36,7 +36,7 @@ public class User {
     private String updatedBy;
     @Column(name = "avatar")
     private String avatar;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     Set< Role> role = new HashSet<>();
 
     @ManyToMany(mappedBy = "users")
