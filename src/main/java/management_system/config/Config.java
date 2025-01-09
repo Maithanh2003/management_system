@@ -33,7 +33,7 @@ public class Config {
     private final SystemUserDetailService systemUserDetailService;
     private final JwtAuthEntryPoint authEntryPoint;
     private static final List<String> SECURED_URLS =
-            List.of("/api/v1/carts/**", "/api/v1/cartItems/**");
+            List.of("/users/**");
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -56,10 +56,6 @@ public class Config {
         authProvider.setUserDetailsService(systemUserDetailService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
-//        sau khi nhận được thông tin người dùng (đối tượng UserDetails), DaoAuthenticationProvider sẽ lấy mật khẩu mà người dùng nhập vào và so sánh với mật khẩu đã mã hóa từ cơ sở dữ liệu (được lưu trong đối tượng UserDetails).
-//        Nếu mật khẩu hợp lệ (sử dụng PasswordEncoder để kiểm tra), người dùng sẽ được xác thực thành công.
-//                Xử lý quyền (Authorities):
-//        Sau khi xác thực thành công, Spring sẽ lưu trữ thông tin xác thực và các quyền của người dùng trong SecurityContext, để có thể sử dụng cho các yêu cầu tiếp theo (ví dụ kiểm tra quyền truy cập vào các tài nguyên bảo mật).
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -69,7 +65,7 @@ public class Config {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                     // Cho phép truy cập không cần xác thực vào các endpoint giao diện đăng nhập
-                    auth.requestMatchers("auth/login", "auth/success").permitAll();
+                    auth.requestMatchers("auth/login").permitAll();
                     // Yêu cầu xác thực cho các URL đã cấu hình
                     auth.requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated();
                     // Các request còn lại được phép truy cập
