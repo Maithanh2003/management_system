@@ -1,6 +1,7 @@
 package management_system.service;
 
 import lombok.AllArgsConstructor;
+import management_system.config.user.SystemUserDetails;
 import management_system.domain.dto.ProjectDTO;
 import management_system.domain.entity.Project;
 import management_system.domain.repository.ProjectRepository;
@@ -10,6 +11,7 @@ import management_system.payload.ProjectRequest;
 import management_system.service.impl.IProjectService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -50,7 +52,9 @@ public class ProjectService implements IProjectService {
         project.setCode(request.getCode());
         project.setName(request.getName());
         project.setCreatedAt(LocalDate.now());
-        project.setCreatedBy("system");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        project.setCreatedBy(userPrincipal.getEmail());
         return projectRepository.save(project);
     }
 
@@ -62,7 +66,9 @@ public class ProjectService implements IProjectService {
         project.setName(request.getName());
         project.setCode(request.getCode());
         project.setUpdatedAt(LocalDate.now());
-        project.setUpdatedBy("system");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        project.setUpdatedBy(userPrincipal.getEmail());
         return projectRepository.save(project);
     }
 
@@ -72,6 +78,9 @@ public class ProjectService implements IProjectService {
                 ()-> new ResourceNotFoundException("role not found")
         );
         project.markAsDeleted();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        project.setUpdatedBy(userPrincipal.getEmail());
         projectRepository.save(project);
     }
 

@@ -47,6 +47,5 @@ public class Project {
     public void markAsDeleted() {
         this.isDeleted = 1;
         this.updatedAt = LocalDate.now();
-        this.updatedBy = "system";
     }
 }

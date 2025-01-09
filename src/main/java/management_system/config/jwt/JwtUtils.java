@@ -64,7 +64,7 @@ public class JwtUtils {
     }
 
     private Role findRoleByName(String roleName) {
-        return roleRepository.findByName(roleName) // Thay thế bằng repository thực tế của bạn
+        return roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
     }
 

@@ -1,6 +1,7 @@
 package management_system.service;
 
 import lombok.AllArgsConstructor;
+import management_system.config.user.SystemUserDetails;
 import management_system.domain.dto.TaskDTO;
 import management_system.domain.entity.Project;
 import management_system.domain.entity.Task;
@@ -15,6 +16,7 @@ import management_system.payload.UpdateTaskRequest;
 import management_system.service.impl.ITaskService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -64,7 +66,9 @@ public class TaskService implements ITaskService {
         if (taskRepository.existsByCode(request.getCode()))
             throw new IllegalArgumentException("Code already exists, please choose a different code.");
         newTask.setCreatedAt(LocalDate.now());
-        newTask.setCreatedBy("system");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        newTask.setCreatedBy(userPrincipal.getEmail());
         newTask.setName(request.getName());
         newTask.setCode(request.getCode());
         Project project = projectRepository.findByName(request.getProject());
@@ -102,6 +106,9 @@ public class TaskService implements ITaskService {
                 ()-> new ResourceNotFoundException("task not found")
         );
         task.markAsDeleted();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        task.setUpdatedBy(userPrincipal.getEmail());
         taskRepository.save(task);
     }
 
@@ -114,6 +121,9 @@ public class TaskService implements ITaskService {
         task.setUpdatedAt(LocalDate.now());
         task.setCode(request.getCode());
         task.setName(request.getName());
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        task.setUpdatedBy(userPrincipal.getEmail());
         return taskRepository.save(task);
     }
     @Override

@@ -1,6 +1,7 @@
 package management_system.service;
 
 import lombok.RequiredArgsConstructor;
+import management_system.config.user.SystemUserDetails;
 import management_system.domain.entity.Permission;
 import management_system.domain.repository.PermissionRepository;
 import management_system.exception.AlreadyExistsException;
@@ -8,6 +9,7 @@ import management_system.exception.ResourceNotFoundException;
 import management_system.payload.PermissionRequest;
 import management_system.service.impl.IPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -51,10 +53,13 @@ public class PermissionService implements IPermissionService {
         }
         var permission = new Permission();
 
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+
         permission.setName(name);
         permission.setCode(code);
         permission.setCreatedAt(LocalDate.now());
-        permission.setCreatedBy("system");
+        permission.setCreatedBy(userPrincipal.getEmail());
 
         return permissionRepository.save(permission);
     }
@@ -66,7 +71,9 @@ public class PermissionService implements IPermissionService {
         );
         permission.setIsDeleted(1);
         permission.setUpdatedAt(LocalDate.now());
-        permission.setUpdatedBy("System");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        permission.setUpdatedBy(userPrincipal.getEmail());
         permissionRepository.save(permission);
 
     }
@@ -78,7 +85,9 @@ public class PermissionService implements IPermissionService {
         );
         permission.setIsDeleted(1);
         permission.setUpdatedAt(LocalDate.now());
-        permission.setUpdatedBy("System");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        permission.setUpdatedBy(userPrincipal.getEmail());
         permissionRepository.save(permission);
     }
 }

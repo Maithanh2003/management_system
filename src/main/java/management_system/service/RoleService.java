@@ -1,6 +1,7 @@
 package management_system.service;
 
 import lombok.RequiredArgsConstructor;
+import management_system.config.user.SystemUserDetails;
 import management_system.domain.dto.RoleDTO;
 import management_system.domain.entity.Permission;
 import management_system.domain.entity.Role;
@@ -11,6 +12,7 @@ import management_system.payload.RoleRequest;
 import management_system.service.impl.IRoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -82,7 +84,9 @@ public class RoleService implements IRoleService {
                 .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
         role.setCreatedAt(LocalDate.now());
-        role.setCreatedBy("System");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        role.setCreatedBy(userPrincipal.getEmail());
         role.setPermission(permissions);
 
         return roleRepository.save(role);
@@ -102,7 +106,9 @@ public class RoleService implements IRoleService {
         role.setName(request.getName());
         role.setCode(request.getCode());
         role.setUpdatedAt(LocalDate.now());
-        role.setUpdatedBy("System");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        role.setUpdatedBy(userPrincipal.getEmail());
         return roleRepository.save(role);
 
     }

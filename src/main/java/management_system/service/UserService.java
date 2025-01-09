@@ -2,6 +2,7 @@ package management_system.service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import management_system.config.user.SystemUserDetails;
 import management_system.domain.dto.UserDTO;
 import management_system.domain.entity.Role;
 import management_system.domain.entity.User;
@@ -14,6 +15,7 @@ import management_system.payload.UpdateUserRequest;
 import management_system.service.impl.IUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +65,9 @@ public class UserService implements IUserService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setCreatedAt(LocalDate.now());
-        user.setCreatedBy("System");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        user.setCreatedBy(userPrincipal.getEmail());
         user.setRole(Set.of(defaultRole));
 
         return userRepository.save(user);
@@ -77,7 +81,9 @@ public class UserService implements IUserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setUpdatedAt(LocalDate.now());
-        user.setUpdatedBy("System");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        user.setUpdatedBy(userPrincipal.getEmail());
 
         return userRepository.save(user);
     }
@@ -91,7 +97,9 @@ public class UserService implements IUserService {
         // Xóa mềm (Soft delete)
         user.setIsDeleted(1);
         user.setUpdatedAt(LocalDate.now());
-        user.setUpdatedBy("System");
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
+        user.setUpdatedBy(userPrincipal.getEmail());
         userRepository.save(user);
     }
     public UserDTO convertToDto(User user) {
