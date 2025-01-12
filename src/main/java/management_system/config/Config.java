@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.List;
 
@@ -28,7 +29,6 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true)
-
 public class Config {
     private final SystemUserDetailService systemUserDetailService;
     private final JwtAuthEntryPoint authEntryPoint;
@@ -84,18 +84,21 @@ private static final List<String> PUBLIC_URLS = List.of(
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(PUBLIC_URLS.toArray(String[]::new)).permitAll();
                     auth.requestMatchers(ADMIN_URLS.toArray(String[]::new)).authenticated();
-                    auth.anyRequest().denyAll();
+                    auth.anyRequest().permitAll();
                 });
         http.authenticationProvider(daoAuthenticationProvider());
         http.addFilterBefore((Filter) authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
+    }
+    @Bean
+    public InternalResourceViewResolver defaultViewResolver() {
+        return new InternalResourceViewResolver();
     }
 }
