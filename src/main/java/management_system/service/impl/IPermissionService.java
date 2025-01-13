@@ -1,17 +1,17 @@
 package management_system.service.impl;
 
-import management_system.domain.entity.Permission;
+import management_system.domain.dto.PermissionDTO;
 import management_system.payload.PermissionRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
 public interface IPermissionService {
-    List<Permission> getAllPermission();
-    Permission getPermissionById(Long PermissionId);
-    Permission getPermissionByName(String name);
-    Permission getPermissionByCode(String code);
-    Permission createPermission (PermissionRequest request);
+    List<PermissionDTO> getAllPermission();
+    PermissionDTO getPermissionById(Long PermissionId);
+    PermissionDTO getPermissionByName(String name);
+    PermissionDTO getPermissionByCode(String code);
+    PermissionDTO createPermission (PermissionRequest request);
     void deletePermissionById (Long permissionId);
     void deletePermissionByCode (String permissionCode);
 

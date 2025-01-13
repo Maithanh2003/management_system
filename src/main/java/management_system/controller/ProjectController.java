@@ -23,53 +23,53 @@ public class ProjectController {
     private IProjectService projectService;
     @GetMapping
     public ApiResponse<List<ProjectDTO>> getAllProjects() {
-        List<Project> projects = projectService.getAllProject();
+        List<ProjectDTO> projects = projectService.getAllProject();
         return ApiResponse.<List<ProjectDTO>>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
-                .result(projects.stream().map(project -> projectService.convertToDto(project)).toList())
+                .result(projects)
                 .build();
     }
 
     @GetMapping("/{projectId}")
     public ApiResponse<ProjectDTO> getProjectById(@PathVariable Long projectId) {
-        Project project = projectService.getProjectById(projectId);
+        ProjectDTO project = projectService.getProjectById(projectId);
         return ApiResponse.<ProjectDTO>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
-                .result(projectService.convertToDto(project))
+                .result(project)
                 .build();
     }
 
     @GetMapping("/user/{userId}")
     public ApiResponse<List<ProjectDTO>> getProjectsByUserId(@PathVariable Long userId) {
-        List<Project> projects = projectService.getProjectByUserId(userId);
+        List<ProjectDTO> projects = projectService.getProjectByUserId(userId);
         return ApiResponse.<List<ProjectDTO>>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
-                .result(projects.stream().map(project -> projectService.convertToDto(project)).toList())
+                .result(projects)
                 .build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<ProjectDTO> createProject(@Valid @RequestBody ProjectRequest request){
-        Project project = projectService.createProject(request);
+        ProjectDTO project = projectService.createProject(request);
         return ApiResponse.<ProjectDTO>builder()
                 .message("tao moi project thanh cong")
                 .code(ResponseConstants.SUCCESS_CODE)
-                .result(projectService.convertToDto(project))
+                .result(project)
                 .build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{projectId}")
     public ApiResponse<ProjectDTO> updateProject(@RequestBody UpdateProjectRequest request, @PathVariable Long projectId) {
-        Project updatedProject = projectService.updateProject(request, projectId);
+        ProjectDTO updatedProject = projectService.updateProject(request, projectId);
         return ApiResponse.<ProjectDTO>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
-                .result(projectService.convertToDto(updatedProject))
+                .result(updatedProject)
                 .build();
     }
 

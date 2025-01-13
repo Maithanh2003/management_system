@@ -2,10 +2,12 @@ package management_system.service;
 
 import lombok.RequiredArgsConstructor;
 import management_system.config.user.SystemUserDetails;
+import management_system.domain.dto.PermissionDTO;
 import management_system.domain.entity.Permission;
 import management_system.domain.repository.PermissionRepository;
 import management_system.exception.AlreadyExistsException;
 import management_system.exception.ResourceNotFoundException;
+import management_system.mapper.PermissionMapper;
 import management_system.payload.PermissionRequest;
 import management_system.service.impl.IPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,33 +21,39 @@ import java.util.List;
 public class PermissionService implements IPermissionService {
     @Autowired
     private final PermissionRepository permissionRepository;
+    @Autowired
+    private final PermissionMapper permissionMapper;
 
     @Override
-    public List<Permission> getAllPermission() {
-        return permissionRepository.findAll();
+    public List<PermissionDTO> getAllPermission() {
+        return permissionMapper.toPermissionDTOs(permissionRepository.findAll());
     }
 
     @Override
-    public Permission getPermissionById(Long permissionId) {
-        return permissionRepository.findById(permissionId)
+    public PermissionDTO getPermissionById(Long permissionId) {
+        Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow( () -> new ResourceNotFoundException("not found permission by id" + permissionId)
-        );
+                );
+
+        return permissionMapper.toPermissionDTO(permission);
     }
 
     @Override
-    public Permission getPermissionByName(String name) {
-        return permissionRepository.findByName(name)
+    public PermissionDTO getPermissionByName(String name) {
+        Permission permission =  permissionRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Permission not found with role: " + name));
+        return permissionMapper.toPermissionDTO(permission);
     }
 
     @Override
-    public Permission getPermissionByCode(String code) {
-        return permissionRepository.findPermissionByCode(code)
+    public PermissionDTO getPermissionByCode(String code) {
+        Permission permission =  permissionRepository.findPermissionByCode(code)
                 .orElseThrow(() -> new RuntimeException("Permission not found with role: " + code));
+        return permissionMapper.toPermissionDTO(permission);
     }
 
     @Override
-    public Permission createPermission(PermissionRequest request) {
+    public PermissionDTO createPermission(PermissionRequest request) {
         String name = request.getName();
         String code = request.getCode();
         if (permissionRepository.existsByCode(request.getCode())) {
@@ -60,8 +68,8 @@ public class PermissionService implements IPermissionService {
         permission.setCode(code);
         permission.setCreatedAt(LocalDate.now());
         permission.setCreatedBy(userPrincipal.getEmail());
-
-        return permissionRepository.save(permission);
+        permissionRepository.save(permission);
+        return permissionMapper.toPermissionDTO(permission);
     }
 
     @Override

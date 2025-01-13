@@ -32,12 +32,11 @@ public class UserController {
     @PostMapping
     public ApiResponse<UserDTO> createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
-            User savedUser = userService.createUser(request);
-            UserDTO userDTO = userService.convertToDto(savedUser);
+            UserDTO savedUser = userService.createUser(request);
             return ApiResponse.<UserDTO>builder()
                     .code(ResponseConstants.SUCCESS_CODE)
                     .message(ResponseConstants.SUCCESS_MESSAGE)
-                    .result(userDTO)
+                    .result(savedUser)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<UserDTO>builder()
@@ -59,12 +58,11 @@ public class UserController {
             } else {
                 log.info("No authenticated user.");
             }
-            List<User> user = userService.getAllUser();
-            List<UserDTO> userDTOS = user.stream().map(users -> userService.convertToDto(users)).toList();
+            List<UserDTO> user = userService.getAllUser();
             return ApiResponse.<List<UserDTO>>builder()
                     .code(ResponseConstants.SUCCESS_CODE)
                     .message(ResponseConstants.SUCCESS_MESSAGE)
-                    .result(userDTOS)
+                    .result(user)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<List<UserDTO>>builder()
@@ -78,12 +76,11 @@ public class UserController {
     @PostAuthorize("hasRole('ADMIN') || returnObject.result.email == authentication.principal.username")
     @GetMapping("/{id}")
     public ApiResponse<UserDTO> getUserById(@PathVariable Long id) {
-        User user = userService.getUserById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        UserDTO UserDto = userService.convertToDto(user);
+        UserDTO user = userService.getUserById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return ApiResponse.<UserDTO>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
-                .result(UserDto)
+                .result(user)
                 .build();
     }
 
@@ -91,12 +88,11 @@ public class UserController {
     @PutMapping("/{id}")
     public ApiResponse<UserDTO> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
         try {
-            User updatedUser = userService.updateUser(request, id);
-            UserDTO UserDto = userService.convertToDto(updatedUser);
+            UserDTO updatedUser = userService.updateUser(request, id);
             return ApiResponse.<UserDTO>builder()
                     .code(ResponseConstants.SUCCESS_CODE)
                     .message(ResponseConstants.SUCCESS_MESSAGE)
-                    .result(UserDto)
+                    .result(updatedUser)
                     .build();
         } catch (Exception e) {
             return ApiResponse.<UserDTO>builder()

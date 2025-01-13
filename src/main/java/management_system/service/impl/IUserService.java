@@ -1,5 +1,6 @@
 package management_system.service.impl;
 
+import management_system.domain.dto.UserDTO;
 import management_system.domain.entity.User;
 import management_system.payload.CreateUserRequest;
 import management_system.payload.UpdateUserRequest;
@@ -8,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IUserService {
-    List<User> getAllUser();
-    Optional<User> getUserById(Long userId);
-    User getUserByEmail(String email);
-    User createUser(CreateUserRequest request);
+    List<UserDTO> getAllUser();
+    Optional<UserDTO> getUserById(Long userId);
+    UserDTO getUserByEmail(String email);
+    UserDTO createUser(CreateUserRequest request);
 
-    User updateUser(UpdateUserRequest request, Long userId);
+    UserDTO updateUser(UpdateUserRequest request, Long userId);
 
     void deleteUser(Long userId);
 }

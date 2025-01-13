@@ -3,6 +3,7 @@ package management_system.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import management_system.domain.constant.ResponseConstants;
+import management_system.domain.dto.PermissionDTO;
 import management_system.domain.entity.Permission;
 import management_system.domain.entity.User;
 import management_system.payload.PermissionRequest;
@@ -23,9 +24,9 @@ public class PermissionController {
     private final PermissionService permissionService;
 
     @GetMapping
-    ApiResponse<List<Permission>> getAllPermisson() {
-        List<Permission> permission = permissionService.getAllPermission();
-        return ApiResponse.<List<Permission>>builder()
+    ApiResponse<List<PermissionDTO>> getAllPermisson() {
+        List<PermissionDTO> permission = permissionService.getAllPermission();
+        return ApiResponse.<List<PermissionDTO>>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(permission)
@@ -33,17 +34,17 @@ public class PermissionController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<Permission> getPermissionById(@PathVariable Long id) {
-        Permission permission = permissionService.getPermissionById(id);
-        return ApiResponse.<Permission>builder()
+    public ApiResponse<PermissionDTO> getPermissionById(@PathVariable Long id) {
+        PermissionDTO permission = permissionService.getPermissionById(id);
+        return ApiResponse.<PermissionDTO>builder()
                 .result(permission)
                 .build();
     }
 
     @GetMapping("/name/{name}")
-    public ApiResponse<Permission> getPermissionByName(@PathVariable String name) {
-        Permission permission = permissionService.getPermissionByName(name);
-        return ApiResponse.<Permission>builder()
+    public ApiResponse<PermissionDTO> getPermissionByName(@PathVariable String name) {
+        PermissionDTO permission = permissionService.getPermissionByName(name);
+        return ApiResponse.<PermissionDTO>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(permission)
@@ -51,9 +52,9 @@ public class PermissionController {
     }
 
     @GetMapping("/code/{code}")
-    public ApiResponse<Permission> getPermissionByCode(@PathVariable String code) {
-        Permission permission = permissionService.getPermissionByCode(code);
-        return ApiResponse.<Permission>builder()
+    public ApiResponse<PermissionDTO> getPermissionByCode(@PathVariable String code) {
+        PermissionDTO permission = permissionService.getPermissionByCode(code);
+        return ApiResponse.<PermissionDTO>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
                 .result(permission)
@@ -62,9 +63,9 @@ public class PermissionController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ApiResponse<Permission> createPermission(@Valid @RequestBody PermissionRequest request) {
-        Permission permission = permissionService.createPermission(request);
-        return ApiResponse.<Permission>builder()
+    public ApiResponse<PermissionDTO> createPermission(@Valid @RequestBody PermissionRequest request) {
+        PermissionDTO permission = permissionService.createPermission(request);
+        return ApiResponse.<PermissionDTO>builder()
                 .code(ResponseConstants.SUCCESS_CODE)
                 .message(ResponseConstants.SUCCESS_MESSAGE)
                 .message("tao permission thanh cong")

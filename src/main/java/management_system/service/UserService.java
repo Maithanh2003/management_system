@@ -10,6 +10,7 @@ import management_system.domain.repository.RoleRepository;
 import management_system.domain.repository.UserRepository;
 import management_system.exception.AlreadyExistsException;
 import management_system.exception.ResourceNotFoundException;
+import management_system.mapper.UserMapper;
 import management_system.payload.CreateUserRequest;
 import management_system.payload.UpdateUserRequest;
 import management_system.service.impl.IUserService;
@@ -28,31 +29,38 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final RoleRepository roleRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    private final ModelMapper modelMapper;
+//    @Autowired
+//    private final ModelMapper modelMapper;
+    private final UserMapper userMapper;
 
     @Transactional
     @Override
-    public List<User> getAllUser() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUser() {
+        return userRepository.findAll().stream().map(users -> userMapper.toUserDTO(users)).toList();
     }
 
     @Override
-    public Optional<User> getUserById(Long userId) {
-        return userRepository.findById(userId);
+    public Optional<UserDTO> getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User not found with ID: " + userId)
+        );
+        return Optional.ofNullable(userMapper.toUserDTO(user));
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("not found user"));
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("not found user"));
+        return userMapper.toUserDTO(user);
     }
 
     @Override
-    public User createUser( CreateUserRequest request) {
+    public UserDTO createUser( CreateUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AlreadyExistsException("User with email " + request.getEmail() + " already exists");
         }
@@ -60,32 +68,34 @@ public class UserService implements IUserService {
                 () -> new ResourceNotFoundException("Default role not found")
         );
 
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        User user = userMapper.toUser(request);
+//        user.setName(request.getName());
+//        user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setCreatedAt(LocalDate.now());
+//        user.setCreatedAt(LocalDate.now());
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
         user.setCreatedBy(userPrincipal.getEmail());
         user.setRole(Set.of(defaultRole));
-
-        return userRepository.save(user);
+        userRepository.save(user);
+        UserDTO userDTO = userMapper.toUserDTO(user);
+        return userDTO;
     }
     @Override
-    public User updateUser(UpdateUserRequest request, Long userId) {
+    public UserDTO updateUser(UpdateUserRequest request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User not found with ID: " +userId)
         );
 
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setUpdatedAt(LocalDate.now());
+//        user.setName(request.getName());
+//        user.setEmail(request.getEmail());
+//        user.setUpdatedAt(LocalDate.now());
+        userMapper.updateUserFromRequest(request, user);
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userPrincipal = (SystemUserDetails) authentication.getPrincipal();
         user.setUpdatedBy(userPrincipal.getEmail());
-
-        return userRepository.save(user);
+        userRepository.save(user);
+        return userMapper.toUserDTO(user);
     }
 
     @Override
@@ -102,11 +112,11 @@ public class UserService implements IUserService {
         user.setUpdatedBy(userPrincipal.getEmail());
         userRepository.save(user);
     }
-    public UserDTO convertToDto(User user) {
-        return modelMapper.map(user, UserDTO.class);
-    }
-
-    public User convertToEntity(UserDTO userDto) {
-        return modelMapper.map(userDto, User.class);
-    }
+//    public UserDTO convertToDto(User user) {
+//        return modelMapper.map(user, UserDTO.class);
+//    }
+//
+//    public User convertToEntity(UserDTO userDto) {
+//        return modelMapper.map(userDto, User.class);
+//    }
 }
